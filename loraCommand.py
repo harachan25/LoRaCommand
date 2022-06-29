@@ -26,48 +26,50 @@ print(time)
 c1 = input()
 
 
-if c1 == "done":
-    c2 = c1 + "*" + time
-    c2len = int(len(c2))
-    c3 = "[" + c1 + "*" + time + "]*" + c2len
-elif c1 == "come":
-    c2 = c1 + "*" + time
+if　c1 == "pos":
+    #c2 =
     c2len = int(len(c2))
     c3 = "[" + c1 + "*" + time + "]*" + c2len
 elif c1 == "rec": #受信したことを伝える
     c2 = c1 + "*" + time
     c2len = int(len(c2))
-    c3 = "[" + c1 + "*" + time + "]*" + c2len
+    c3 = "[" + c2 + "]*" + c2len
 elif c1 == "rssi":
-    #c2 = 
+    c2 = c1 + "*" + time
+    c2len = int(len(c2))
+    c3 = "[" + c2 + "]*" + c2len
+elif c1 == "goto":
+    #c2 =
     c2len = int(len(c2))
     c3 = "[" + c1 + "*" + time + "]*" + c2len
+elif c1 == "come":
+    c2 = c1 + "*" + time
+    c2len = int(len(c2))
+    c3 = "[" + c2 + "]*" + c2len
 elif c1 == "rqps":
-    #c2 = 
+    #c2 =
     c2len = int(len(c2))
     c3 = "[" + c1 + "*" + time + "]*" + c2len
 elif c1 == "rqrs":
-    #c2 = 
+    #c2 =
     c2len = int(len(c2))
     c3 = "[" + c1 + "*" + time + "]*" + c2len
-elif c1 == "goto":
-    #c2 = 
+elif c1 == "done":
+    c2 = c1 + "*" + time
     c2len = int(len(c2))
-    c3 = "[" + c1 + "*" + time + "]*" + c2len
-elif c1 == "pos":
-    #c2 = 
-    c2len = int(len(c2))
-    c3 = "[" + c1 + "*" + time + "]*" + c2len
+    c3 = "[" + c2 + "]*" + c2len
 elif c1 == "err":
    #c2 = 
     c2len = int(len(c2))
     c3 = "[" + c1 + "*" + time + "]*" + c2len
+    #引数なし
 elif c1 == "remi":
-    #c2 = 
+    c2 = c1
     c2len = int(len(c2))
-    c3 = "[" + c1 + "*" + time + "]*" + c2len
+    c3 = "[" + c1 + "*" + c2len
 else:
   c3= "none"
+  
 
 cmd0 = str(binascii.hexlify(c3.encode()))
 cmd1 = cmd0[2:len(cmd0)-1]
