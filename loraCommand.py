@@ -28,7 +28,7 @@ c0 = input()
 
 # bitDouble: double(64ビット長)を、8bitずつ(0x00 ~ 0xFF)に区切って8ビットを生成した型
 # 64bitを8bitずつ8桁にして生成する
-if　c0 == "pos":
+if c0 == "pos":
 # c1 = 緯度: bitDouble, c2 = 経度: bitDouble
     c1 = input() #64bitを文字列としてc1に格納
     c2 = input()
@@ -36,7 +36,7 @@ if　c0 == "pos":
     j = 0
     C1 = ""
     C2 = ""
-    for i in range(8): //8回繰り返す
+    for i in range(8): #8回繰り返す
         c1_i = c1[8*i:8*i+8] #文字列c1から8文字(8桁)ずつ取り出す
         c2_i = c2[8*i:8*i+8]
         C1 = C1 + str(binascii.hexlify(c1_i.encode())) #取り出した8文字を16進数に変換して足す
@@ -44,7 +44,7 @@ if　c0 == "pos":
         i = i + 1
     c9 = c0 + "*" + C1 + "*" + C2 + "*" + time
 elif c0 == "rec": #受信したことを伝える
-    c1 = c0 + "*" + time
+    c9 = c0 + "*" + time
     
 elif c0 == "rssi":
     c9 = c0 + "*" + time
@@ -60,6 +60,7 @@ elif c0 == "come":##
     
 elif c0 == "rqps":##
     c9 = c0 + "*" + time
+    
 elif c0 == "rqrs":
     c1 = input() #c2秒間でc1回送信
     c2 = input()
@@ -69,7 +70,7 @@ elif c0 == "done":##
     c9 = c0 + "*" + time
     
 elif c0 == "err":
-#    c1 = エラー名
+    c1 = input()
     c9 = c0 + "*" + c1 + "*" + time
     
 elif c0 == "remi":
@@ -78,7 +79,7 @@ else:
   c9= "none"
   
   
-c9len = int(len(c9))
+c9len = str(len(c9))
 c = "[" + c9 + "]*" + c9len
 cmd0 = str(binascii.hexlify(c.encode()))
 cmd1 = cmd0[2:len(cmd0)-1]
