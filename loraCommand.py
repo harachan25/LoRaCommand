@@ -1,10 +1,8 @@
-#lenはcmdとparamの長さの合計バイト
 #送信は16進数で読み込みはアスキー
 
 import binascii
 import datetime
 import struct
-
 
 #4040ff4154 + <len({22+文字数}/2)> + AAAA0001ffffffffffff + <文字数> + <“[done*180000]*10”>          +  AA
 #4040ff4154   1b                    AAAA0001ffffffffffff   10        5b646f6e652a3138303030305d2a3130 AA
@@ -18,89 +16,65 @@ middle = 'AAAA0001ffffffffffff'
 #cmd1 = '' アスキー文字のコマンドを16進数にした文字列，例：[done*180000]*10
 last = 'AA'
 
-
 #時間取得
 dt_now = datetime.datetime.now()
 time = dt_now.strftime ('%H%M%S')
 print(time)
-#cmd1
-c0 = input()
+Time = str(binascii.hexlify(time.encode()))
 
+#cmd1
+c0 = input('command:')
+#前半:
+fo = c0 + "*"
+Fo = str(binascii.hexlify(fo.encode()))
 
 # bitDouble: double(64ビット長)を、8bitずつ(0x00 ~ 0xFF)に区切って8ビットを生成した型
 # 64bitを8bitずつ8桁にして生成する
-if c0 == "pos":
-# c1 = 緯度: bitDouble, c2 = 経度: bitDouble
-    c1 = input() #64bitを文字列としてc1に格納
-    c2 = input()
+if c0 == "pos" or c0 =="goto":# c1 = 緯度: bitDouble, c2 = 経度: bitDouble
+    c1 = input('latitude:')#64bitを文字列としてc1に格納
+    c2 = input('longtitude:')
+    
     i = 0
-    j = 0
     C1 = ""
     C1_a = struct.pack('>d', float(c1)) #b'\xc0\t!\xd4\xb6\xa6\x19\xdb'
     C1_b = struct.unpack('>Q', C1_a)[0] #13837628527553681883
     C1_c = bin(C1_b) #'0b1100000000001001001000011101010010110110101001100001100111011011'
     C1_d = str(C1_c)[2:len(C1_c)] #'1100000000001001001000011101010010110110101001100001100111011011'
-    if len(C1_d) != 64:
-        C1_e = "00" + C1_d
-    else:
-        C1_e = C1_d
+    C1_e = C1_d.zfill(64)
     C2 = ""
     C2_a = struct.pack('>d', float(c2)) #b'\xc0\t!\xd4\xb6\xa6\x19\xdb'
     C2_b = struct.unpack('>Q', C2_a)[0] #13837628527553681883
     C2_c = bin(C2_b) #'0b1100000000001001001000011101010010110110101001100001100111011011'
     C2_d = str(C2_c)[2:len(C2_c)] #'1100000000001001001000011101010010110110101001100001100111011011'
-    if len(C2_d) != 64:
-        C2_e = "00" + C2_d
-    else:
-        C2_e = C2_d
-    print(C1_e)
-    print(C2_e)
-    
-    
+    C2_e = C2_d.zfill(64)
     for i in range(8): #8回繰り返す
-        print(i)
-        c1_i = str(C1_e[8*i:8*i+8]) #文字列c1から8文字(8桁)ずつ取り出す
-        newC1 = str(str(c1_i)[2:len(hex(int(c1_i)))-2])
-        if len(newC1) != 4:
-            newC1 = "0" +str(str(c1_i)[2:len(hex(int(c1_i)))-2])
-        print("newC1", newC1)
-        C1 = str(C1) + newC1 #取り出した8文字を16進数に変換して足す
-        print("c1_i",c1_i)
-        print("C1",C1)
-        c2_i = str(C2_e[8*i:8*i+8])
-        newC2 = str(str(c2_i)[2:len(hex(int(c2_i)))-2])
-        if len(newC2) != 4:
-            newC2 = "0" +str(str(c2_i)[2:len(hex(int(c2_i)))-2])
-        print("newC2", newC2)
-        C2 = str(C2) + newC2
-        print("c2_i",c2_i)
-        print("C2",C2)
+        pic8_1 = int(C1_e[8*i:8*i+8].zfill(8))#i文字目から8文字(8桁)取り出して右寄せ0埋め
+        toHex_1 = hex(pic8_1)[2:len(hex(pic8_1))]#文字列pic8を16進数にする
+        C1 = str(C1) + toHex_1 #取り出した8文字を16進数に変換して足す
+        pic8_2 = int(C2_e[8*i:8*i+8].zfill(8))#i文字目から8文字(8桁)取り出して右寄せ0埋め
+        toHex_2 = hex(pic8_2)[2:len(hex(pic8_2))]#文字列pic8を16進数にする
+        C2 = str(C2) + toHex_2 #取り出した8文字を16進数に変換して足す
         i = i + 1
-    c9 = c0 + "*" + C1[-8:] + "*" + C2[-8:] + "*" + time
-    print(c9)
+    c9 = c0 + "*" + c1 + "*" +time
+    C9 = Fo[2:len(Fo)-1] + str(C1) + "2a" + str(C2) + "2a" + Time[2:len(Time)-1]
+
 elif c0 == "rec": #受信したことを伝える
     c9 = c0 + "*" + time
-    
+    C9 = Fo[2:len(Fo)-1] + "2a" + Time[2:len(Time)-1]
 elif c0 == "rssi":
     c9 = c0 + "*" + time
-    
-elif c0 == "goto":
-#c1 = 緯度: bitDouble, c2 = 経度: bitDouble
-    c1 = input()
-    c2 = input()
-    c9 = c0 + "*" + c1 + "*" + c2 + "*" + time
-    
-elif c0 == "come":##
+    C9 = Fo[2:len(Fo)-1] + "2a" + Time[2:len(Time)-1]
+elif c0 == "come":
     c9 = c0 + "*" + time
-    
-elif c0 == "rqps":##
+    C9 = Fo[2:len(Fo)-1] + "2a" + Time[2:len(Time)-1]
+elif c0 == "rqps":
     c9 = c0 + "*" + time
-    
+    C9 = Fo[2:len(Fo)-1] + "2a" + Time[2:len(Time)-1]
 elif c0 == "rqrs":
-    c1 = input() #c2秒間でc1回送信
-    c2 = input()
-    c9 = c0 + "*" + c1 + "*" + c2 + "*" + time
-    
+    c1 = input('何秒間で:')
+    c2 = input('何回送る:')#c1秒間でc2回送信
+    c9 = c0 + "*" + c2 + "*" + c1 + "*" + time
+    C9 = Fo[2:len(Fo)-1] + "2a" + Time[2:len(Time)-1]
 elif c0 == "done":##
     c9 = c0 + "*" + time
     
@@ -124,21 +98,21 @@ elif c0 == "srun":
     
 else:
   c9= "none"
-  
-  
-c9len = str(len(c9))
-c = "[" + c9 + "]*" + c9len
-cmd0 = str(binascii.hexlify(c.encode()))
-cmd1 = cmd0[2:len(cmd0)-1]
+
+#後半: ]*]len
+la = "]*" + str(len(c9))
+La = str(binascii.hexlify(la.encode()))
+
+Cmd0 = "5b" + C9 + La[2:len(La)-1]
+Cmd1 = Cmd0[2:len(Cmd0)-1]
 
 #len2
-num2 = int(len(cmd1) /2)
+num2 = int(len(Cmd1) /2)
 len2 = hex(num2)[2:] # num2に格納された数字を16進数の文字列にして代入
 
 #len1
-num1 = int((len(middle) + len(len2) + len(cmd1))/2)
+num1 = int((len(middle) + len(len2) + len(Cmd1))/2)
 len1 = hex(num1)[2:] # num1に格納された数字を16進数の文字列にして代入
 
-
-command = first + len1 +  middle + len2 + cmd1 + last
+command = first + len1 +  middle + len2 + Cmd1 + last
 print(command)
