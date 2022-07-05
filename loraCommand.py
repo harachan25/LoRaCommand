@@ -57,17 +57,8 @@ if c0 == "pos" or c0 =="goto":# c1 = 緯度: bitDouble, c2 = 経度: bitDouble
         i = i + 1
     c9 = c0 + "*" + c1 + "*" +time
     C9 = Fo[2:len(Fo)-1] + str(C1) + "2a" + str(C2) + "2a" + Time[2:len(Time)-1]
-
-elif c0 == "rec": #受信したことを伝える
-    c9 = c0 + "*" + time
-    C9 = Fo[2:len(Fo)-1] + "2a" + Time[2:len(Time)-1]
-elif c0 == "rssi":
-    c9 = c0 + "*" + time
-    C9 = Fo[2:len(Fo)-1] + "2a" + Time[2:len(Time)-1]
-elif c0 == "come":
-    c9 = c0 + "*" + time
-    C9 = Fo[2:len(Fo)-1] + "2a" + Time[2:len(Time)-1]
-elif c0 == "rqps":
+#rec:受信したことを伝える
+elif c0 == "rec" or c0 == "rssi" or c0 == "come" or c0 == "rqps" or c0 == "done":
     c9 = c0 + "*" + time
     C9 = Fo[2:len(Fo)-1] + "2a" + Time[2:len(Time)-1]
 elif c0 == "rqrs":
@@ -75,15 +66,19 @@ elif c0 == "rqrs":
     c2 = input('何回送る:')#c1秒間でc2回送信
     c9 = c0 + "*" + c2 + "*" + c1 + "*" + time
     C9 = Fo[2:len(Fo)-1] + "2a" + Time[2:len(Time)-1]
-elif c0 == "done":##
-    c9 = c0 + "*" + time
     
 elif c0 == "err":
     c1 = input()
+    C1 = str(binascii.hexlify(c1.encode()))
     c9 = c0 + "*" + c1 + "*" + time
+    C9 = Fo[2:len(Fo)-1] + str(C1[2:len(C1)-1]) + "2a" + Time[2:len(Time)-1]
     
 elif c0 == "remi":
     c9 = c0
+    C9 = str(binascii.hexlify(c9.encode()))
+    C9 = C9[2:len(C9)-1]
+    print(C9)
+    
 elif c0 == "sacc":
     c1 = input() #データ数(以下データ数分だけ繰り返す): int
     c2 = input() #緯度
@@ -98,7 +93,9 @@ elif c0 == "srun":
     
 else:
   c9= "none"
-
+  C9 = str(binascii.hexlify(c9.encode()))
+  C9 = C9[2:len(C9)-1]
+  print(C9)
 #後半: ]*]len
 la = "]*" + str(len(c9))
 La = str(binascii.hexlify(la.encode()))
