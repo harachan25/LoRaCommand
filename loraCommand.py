@@ -4,13 +4,10 @@
 #'文字列'.encode('文字コード名'):文字列をバイトに変換
 #b'バイト列'.decode('文字コード名'):バイトを文字列に変換
 
-##資料のフォーマット##
+##フォーマットと例##
 #command = first + len(cmd + param) + cmd + param + last
 #4040ff4154 + <len({22+文字数}/2)> + AAAA0001ffffffffffff + <文字数> + <“[done*180000]*10”> +  AA
 #4040ff4154 + 1b + AAAA0001ffffffffffff + 10 + 5b646f6e652a3138303030305d2a3130 + AA
-
-
-
 ###プログラム###
 import binascii
 import datetime
@@ -26,8 +23,7 @@ print("time:",time)
 param1 = input('送信先アドレス(param1):').zfill(4)
 c0 = input('command:')
 
-
-##コマンドと引数##
+#コマンドと引数#
 # bitDouble: double(64ビット長)を、8bitずつ(0x00 ~ 0xFF)に区切って8ビットを生成した型
 # 64bitを8bitずつ8桁にして生成する
 if c0 == "pos" or c0 =="goto":# c1 = 緯度: bitDouble, c2 = 経度: bitDouble
@@ -81,5 +77,12 @@ param = str(param1) + param2to4 + str(param5) + param6 #0001ffffffffffff10[done*
 last = "AA"
 command = first +  str(len(cmd + param)) + cmd + param + last
 Command = str(binascii.hexlify(command.encode()))
+Command = Command[2:len(Command)-1]
 ##出力
-print (Command[2:len(Command)-1])
+print (Command)
+
+
+##確認用(16進数のコマンドをアスキー文字に変換)
+Default = str(binascii.unhexlify(Command))
+Default = Default[2:len(Default)-1]
+print("送信内容:" + Default)
