@@ -47,20 +47,36 @@ elif c0 == "err":
 elif c0 == "remi":
     param6in = c0
     
-elif c0 == "sacc":
-    c1 = input() #データ数(以下データ数分だけ繰り返す): int
-    c2 = input() #緯度
-    c3 = input() #経度
-    c4 = input() #加速度L2ノルム: bitDouble
-    param6in = c0 + "*" + str(c1) + "*" + c2 + "*" + c3 + "*" + c4
-elif c0 == "srun":
-    c1 = input() #状態(反転/0,横転/1,復帰不可/2): int
-    c2 = input() #緯度
-    c3 = input() #経度
+elif c0 == "srun":#探索データ送信(走行状態, 復帰の可否が分かり次第送信)
+    c1 = input('状態(反転/0,横転/1,スタック/2,復帰不可/3):int')
+    c2 = input('latitude:') #緯度
+    c3 = input('longtitude:') #経度
+    param6in = c0 + "*" + str(c1) + "*" + c2 + "*" + c3
+    
+    elif c0 == "rout":#移動経路送信
+    c1 = input('データNo.(-1で終了): int')
+    c2 = input('latitude:') #緯度
+    c3 = input('longtitude:') #経度
+    param6in = c0 + "*" + str(c1) + "*" + c2 + "*" + c3
+    
+elif c0 == "saft":#安全性評価データ送信
+    c1 = input('安全性評価データ: int(0 ~ INT_MAX)')
+    c2 = input('latitude:') #緯度
+    c3 = input('longtitude:') #経度
+    param6in = c0 + "*" + str(c1) + "*" + c2 + "*" + c3
+    
+elif c0 == "por":#複数ローバの座標等の情報送信
+    c1 = input('データ数(以下データ数分だけ繰り返す): int')
+    c2 = input('latitude:') #緯度
+    c3 = input('longtitude:') #経度
     param6in = c0 + "*" + str(c1) + "*" + c2 + "*" + c3
     
 else:
-  param6in = "none"
+ for i in range(3):
+  print("check your input")
+  i = i + 1
+  param6in = c0
+  
 
 
 
@@ -71,7 +87,7 @@ cmd = "AAAA" #AAAA
 #param1 = 入力 #0001
 param2to4 = "ffffffffffff" #コマンド内容
 #param6in = #done*180000
-param6 ="[" + param6in + "]*" + str(len(param6in) - param6in.count("*")) #[done*180000]*10
+param6 ="[" + param6in + "]*" + str(len(param6in)) #[done*180000]*11
 param5 = len(param6)-1 #10([]内の*の数を抜いた長さ)
 param = str(param1) + param2to4 + str(param5) + param6 #0001ffffffffffff10[done*180000]
 last = "AA"
